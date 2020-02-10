@@ -1,0 +1,38 @@
+#include  <SPI.h> 
+#include "nRF24L01.h" 
+#include "RF24.h" 
+int msg[7]; 
+RF24 radio(9,10); 
+const uint64_t pipe = 0xE8E8F0F0E1LL; 
+int j1x,j1y,j2x,j2y,j3x,j3y;
+
+void setup(void)
+{
+    radio.begin(); 
+    radio.openWritingPipe(pipe);
+    pinMode(A0,INPUT);  //Joystick 1 x
+    pinMode(A1,INPUT);  //Joystick 1 y
+    pinMode(A2,INPUT);  //Joystick 2 x
+    pinMode(A3,INPUT);  //Joystick 2 y
+    pinMode(A4,INPUT);  //Joystick 3 x
+    pinMode(A5,INPUT);  //Joystick 3 y
+ } 
+
+void loop(void)
+  {
+       j1x=analogRead(A0);
+       j1y=analogRead(A1);
+       j2x=analogRead(A2);
+       j2y=analogRead(A3);
+       j3x=analogRead(A4);
+       j3y=analogRead(A5);      
+      
+        msg[0] = 111;    
+        msg[1]=map(j1x,0,1023,0,255);
+        msg[2]=map(j1y,0,1023,0,255);
+        msg[3]=map(j2x,0,1023,0,255);
+        msg[4]=map(j2y,0,1023,0,255);
+        msg[5]=map(j3x,0,1023,0,255);
+        msg[6]=map(j3y,0,1023,0,255);      
+        radio.write(msg, sizeof(msg));
+  }
